@@ -3,6 +3,7 @@ package tool
 import (
 	"flag"
 	"github.com/caothu159/grunt"
+	"github.com/caothu159/hosts"
 	"github.com/google/gxui"
 	"github.com/google/gxui/drivers/gl"
 	"github.com/google/gxui/math"
@@ -49,7 +50,7 @@ func appMain(driver gxui.Driver) {
 
 	// ┌───────┐║┌───────┐
 	// │       │║│       │
-	// │+Grunt │║│   B   │
+	// │   A   │║│   B   │
 	// │       │║│       │
 	// │       │║└───────┘
 	// │       │║═════════
@@ -61,7 +62,7 @@ func appMain(driver gxui.Driver) {
 
 	// Left
 	leftPanelHolder := theme.CreatePanelHolder()
-	leftPanelHolder.AddPanel(grunt.CreateGrunt(theme), "Grunt")
+	leftPanelHolder.AddPanel(label("A content"), "A")
 
 	splitterLeft := theme.CreateSplitterLayout()
 	splitterLeft.SetOrientation(gxui.Vertical)
@@ -87,6 +88,12 @@ func appMain(driver gxui.Driver) {
 	splitter.AddChild(splitterLeft)
 	splitter.AddChild(splitterRight)
 
+	// Main Panel
+	mainPanelHolder := theme.CreatePanelHolder()
+	mainPanelHolder.AddPanel(grunt.CreateGrunt(theme), "Grunt")
+	mainPanelHolder.AddPanel(hosts.CreateHosts(theme), "Hosts")
+	mainPanelHolder.AddPanel(splitter, "In Feature Developing")
+
 	window := theme.CreateWindow(800, 600, "Code tools")
 	window.SetScale(_defaultScaleFactor)
 	window.SetPadding(math.Spacing{
@@ -100,8 +107,7 @@ func appMain(driver gxui.Driver) {
 		T: 10,
 	})
 	window.OnClose(driver.Terminate)
-
-	window.AddChild(splitter)
+	window.AddChild(mainPanelHolder)
 }
 
 func CreateWindow() {
